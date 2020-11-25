@@ -144,6 +144,16 @@ def tobs():
     return jsonify(tobs_list)
 
 
+@app.route("/api/v1.0/<start>")
+def startdates(start):
+    return f"{start}"
+
+
+@app.route("/api/v1.0/<start>/<end>")
+def startandenddates(start, end):
+    return f"{start} {end}"
+
+
 #################################################
 # Flask run main app
 #################################################
