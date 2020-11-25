@@ -49,8 +49,8 @@ def welcome():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/&lt;start&gt;<br/>"
-        f"/api/v1.0/&lt;start&gt;/&lt;end&gt;"
+        f"/api/v1.0/tobs/&lt;start&gt;<br/>"
+        f"/api/v1.0/tobs/&lt;start&gt;/&lt;end&gt;"
     )
 
 #
@@ -144,14 +144,52 @@ def tobs():
     return jsonify(tobs_list)
 
 
-@app.route("/api/v1.0/<start>")
-def startdates(start):
-    return f"{start}"
+def get_avg_temps_for_dates(start_date, end_date=None):
+
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    # Build a dynamic filter list in case end_date is present
+    flist = [Measurements.date >= start_date]
+    if end_date is not None:
+        flist.append(Measurements.date <= end_date)
+
+    # Get data for the dates grabbed for this station found
+    results = session.query(
+        Measurements.date,
+        func.min(Measurements.tobs),
+        func.max(Measurements.tobs),
+        func.avg(Measurements.tobs)
+    ).filter(*flist).\
+        group_by(Measurements.date).\
+        order_by(Measurements.date)
+
+    print(results.statement.compile())
+
+    # Get the list of date aggregations
+    t_list = []
+    for t_date, t_min, t_max, t_avg in results.all():
+        t_dict = {}
+        t_dict["date"] = t_date
+        t_dict["min"] = t_min
+        t_dict["max"] = t_max
+        t_dict["avg"] = t_avg
+        t_list.append(t_dict)
+
+    # Close the session we don't want to run out of resources
+    session.close()
+
+    return t_list
 
 
-@app.route("/api/v1.0/<start>/<end>")
-def startandenddates(start, end):
-    return f"{start} {end}"
+@ app.route("/api/v1.0/tobs/<start>")
+def start_dates(start):
+    return jsonify(get_avg_temps_for_dates(start))
+
+
+@ app.route("/api/v1.0/tobs/<start>/<end>")
+def start_and_end_dates(start, end):
+    return jsonify(get_avg_temps_for_dates(start, end))
 
 
 #################################################
