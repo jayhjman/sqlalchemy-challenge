@@ -104,6 +104,46 @@ def stations():
     return jsonify(station_list)
 
 
+@app.route("/api/v1.0/tobs")
+def tobs():
+
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    # Query the DB for most active station
+    results = session.query(Measurements.station, Stations.name, func.count(Measurements.tobs)).\
+        filter(Measurements.station == Stations.station).\
+        group_by(Measurements.station).\
+        order_by(func.count(Measurements.tobs).desc())
+
+    # Get most active
+    station_id, station_name, station_count = results.first()
+
+    # Get date ranges for this station's previous year
+    results = session.query(func.date(func.max(Measurements.date), '-12 months'), func.max(Measurements.date)).\
+        filter(Measurements.station == station_id)
+    start_date, finish_date = results.first()
+
+    # Get data for the dates grabbed for this station found
+    results = session.query(Measurements.date, Measurements.tobs).\
+        filter(Measurements.date >= start_date, Measurements.date <= finish_date).\
+        filter(Measurements.station == station_id).\
+        order_by(Measurements.date)
+    print(results.statement.compile())
+
+    # Build the dictionary list to send back to caller
+    tobs_list = []
+    for date, tobs in results:
+        tobs_dict = {}
+        tobs_dict[date] = tobs
+        tobs_list.append(tobs_dict)
+
+    # Close the session we don't want to run out of resources
+    session.close()
+
+    return jsonify(tobs_list)
+
+
 #################################################
 # Flask run main app
 #################################################
