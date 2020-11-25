@@ -39,6 +39,8 @@ app = Flask(__name__)
 #################################################
 
 # Base route, API specs
+
+
 @app.route("/")
 def welcome():
     """List all available api routes."""
@@ -51,9 +53,59 @@ def welcome():
         f"/api/v1.0/&lt;start&gt;/&lt;end&gt;"
     )
 
+#
+# Get the precipitation list for entire Hawaii
+#
+
+
+@app.route("/api/v1.0/precipitation")
+def precipitation():
+
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    # Query the DB
+    results = session.query(
+        Measurements.date, Measurements.prcp).order_by(Measurements.date)
+
+    # Loop through and build dictionary list
+    precipitation_list = []
+    for date, precipitation in results:
+        precip = {}
+        precip[date] = precipitation
+        precipitation_list.append(precip)
+
+    # Close the session we don't want to run out of resources
+    session.close()
+
+    return jsonify(precipitation_list)
+
+
+@app.route("/api/v1.0/stations")
+def stations():
+
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    # Query the DB
+    results = session.query(Stations.station, Stations.name)
+
+    # Loop through and build dictionary list
+    station_list = []
+    for station, name in results:
+        station_dict = {}
+        station_dict["station"] = station
+        station_dict["name"] = name
+        station_list.append(station_dict)
+
+    # Close the session we don't want to run out of resources
+    session.close()
+
+    return jsonify(station_list)
+
 
 #################################################
-# Flask run main app 
+# Flask run main app
 #################################################
 if __name__ == '__main__':
     app.run(debug=True)
