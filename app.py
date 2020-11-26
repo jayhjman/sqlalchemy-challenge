@@ -38,7 +38,9 @@ app = Flask(__name__)
 # Flask Routes
 #################################################
 
+#
 # Base route, API specs
+#
 
 
 @app.route("/")
@@ -80,6 +82,10 @@ def precipitation():
 
     return jsonify(precipitation_list)
 
+#
+# Gets the list of stations with id and name
+#
+
 
 @app.route("/api/v1.0/stations")
 def stations():
@@ -102,6 +108,10 @@ def stations():
     session.close()
 
     return jsonify(station_list)
+
+#
+# Gets the most active Station and fetches previous years temperatures
+#
 
 
 @app.route("/api/v1.0/tobs")
@@ -129,7 +139,6 @@ def tobs():
         filter(Measurements.date >= start_date, Measurements.date <= finish_date).\
         filter(Measurements.station == station_id).\
         order_by(Measurements.date)
-    print(results.statement.compile())
 
     # Build the dictionary list to send back to caller
     tobs_list = []
@@ -143,8 +152,16 @@ def tobs():
 
     return jsonify(tobs_list)
 
+#
+# Function to calculate the min, avg, and max temperatures
+# for the given date range
+#
+# end_date defaults to None if no passed, this means we get
+# everything greater than or equal to start date in this case
+#
 
-def get_avg_temps_for_dates(start_date, end_date=None):
+
+def get_aggregated_temps_for_dates(start_date, end_date=None):
 
     # Create our session (link) from Python to the DB
     session = Session(engine)
@@ -164,8 +181,6 @@ def get_avg_temps_for_dates(start_date, end_date=None):
         group_by(Measurements.date).\
         order_by(Measurements.date)
 
-    print(results.statement.compile())
-
     # Get the list of date aggregations
     t_list = []
     for t_date, t_min, t_max, t_avg in results.all():
@@ -181,15 +196,23 @@ def get_avg_temps_for_dates(start_date, end_date=None):
 
     return t_list
 
+#
+# Gets aggregated temps from the start date onward
+#
+
 
 @ app.route("/api/v1.0/tobs/<start>")
 def start_dates(start):
-    return jsonify(get_avg_temps_for_dates(start))
+    return jsonify(get_aggregated_temps_for_dates(start))
+
+#
+# Gets aggregated temps from the start date to end date
+#
 
 
 @ app.route("/api/v1.0/tobs/<start>/<end>")
 def start_and_end_dates(start, end):
-    return jsonify(get_avg_temps_for_dates(start, end))
+    return jsonify(get_aggregated_temps_for_dates(start, end))
 
 
 #################################################
