@@ -18,7 +18,35 @@
 
 - Climate Analysis
 
-  ![All Rain](Results/rain_bar.png)
+  - Rain in Inches by Date for all Hawaii Stations
+
+    ![All Rain](Results/rain_bar.png)
+
+  - Most Active Station Temperature History
+
+    ![Temperature History](Results/temp_hist.png)
+
+- Bonus Analysis
+
+  - T Tests
+
+    ![T-Test Scatter](Results/ttest_scatter.png)
+
+    ![T-Test History](Results/ttest_hist.png)
+
+    Ttest_indResult(statistic=31.355036920962423, pvalue=4.193529835915755e-187)
+
+  - Average Temperature for Trip
+
+    ![Average Temperature](Results/temp_trip_bar.png)
+
+  - Average Daily Temperature for Trip
+
+    ![Daily Temperature Average](Results/temp_trip_area.png)
+
+- Climate Flask API
+
+  Please use the following APIs to see the results:
 
 ## Analysis
 
