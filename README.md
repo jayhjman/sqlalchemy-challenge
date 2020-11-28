@@ -74,41 +74,33 @@
 
 ## Execution
 
-1. You will need Postgres and pgadmin4 to execute the following from the EmployeeSQL (assumption, you have a working, installed Postgres)
-
-   - [`create-objects.sql`](EmployeeSQL/DDL/create-objects.sql) - please execute the SQL against your database and schema in the order they appear in the file (take note of the database name, user, schema and password for **_Bonus_** part below)
-
-   - Inside of pgadmin4 traverse to the created tables and one at a time in the order listed import the data from the following CSV files into the named tables:
-
-   - [`departments.csv`](EmployeeSQL/Resources/departments.csv)
-   - [`titles.csv`](EmployeeSQL/Resources/titles.csv)
-   - [`employees.csv`](EmployeeSQL/Resources/employees.csv)
-   - [`dept_emp.csv`](EmployeeSQL/Resources/dept_emp.csv)
-   - [`dept_manager.csv`](EmployeeSQL/Resources/dept_manager.csv)
-   - [`salaries.csv`](EmployeeSQL/Resources/salaries.csv)
-
-   - You can now execute the [`analysis.sql`](EmployeeSQL/Analysis-SQL/analysis.sql) to get the query results.
-
-1. For the **_Bonus_** material make sure EmployeeSQL steps above are complete and the database exists, the assumption is that you have a working Python 3.6 environment and:
+1. For the **_Climate Analysis_** material the assumption is that you have a working Python 3.6 environment and:
 
    - Jupyter Notebook 6.1.4
    - SQLAlchemy 1.3.17
    - pandas 1.0.5
-   - matplotlib 3.2.2
-   - sqlparse 0.4.1
+   - matplotlib 3.2.
+   - numpy 1.18.5
 
-1. Clone the [`git repository`](https://github.com/jayhjman/sql-challenge) for this project
-1. Change into the [`repository directory`](https://github.com/jayhjman/sql-challenge) and then into [`Bonus`](Bonus/)
-1. In the `Bonus` directory create a file called `config.py` and add the following lines:
+1. Clone the [`git repository`](https://github.com/jayhjman/sqlalchemy-challenge) for this project
 
-   - db_name="YOUR DB NAME"
-   - db_user="YOUR DB USER NAME"
-   - db_password="YOUR PASSWORD"
-   - db_schema="YOUR SCHEMA NAME"
+1. Change into the [`repository directory`](https://github.com/jayhjman/sqlalchemy-challenge)
 
-   Replace the values in the double quotes above with your database's specific settings
+1. Load and execute [`climate.ipynb`](climate.ipynb)
 
-1. Once `config.py` is saved open up Jupyter Notebook in the `Bonus` directy and load and execute [`Bonus.ipynb`](Bonus/Bonus.ipynb)
+1. For the **_Climate Flask API_** material the assumption is that you have a working Python 3.6 environment and:
+
+   - SQLAlchemy 1.3.17
+   - numpy 1.18.5
+   - Flask 1.1.2
+
+1. Use the previously cloned [`git repository`](https://github.com/jayhjman/sqlalchemy-challenge) from above
+
+1. Change into the [`repository directory`](https://github.com/jayhjman/sqlalchemy-challenge)
+
+1. Execute [`app.py`](app.py) by typing the command `python app.py` at command line
+
+1. Access via the browser `http://127.0.0.1:5000/` this will show you the API specifications, call each in turn, providing parameters when required
 
 ## Author
 
