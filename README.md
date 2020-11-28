@@ -18,9 +18,9 @@
 
   - [`hawaii.sqlite`](Resources/) - The database with the Hawaiian climate data, prepopuated and ready to go (Please don't open directly as it is a binary file)
 
-  - [`hawaii-measurements.csv`](Resources/hawaii-measurements.csv) - Seed data for Hawaiian climate data for measurements taken from each of the Hawaiian stations.
+  - [`hawaii_measurements.csv`](Resources/hawaii_measurements.csv) - Seed data for Hawaiian climate data for measurements taken from each of the Hawaiian stations.
 
-  - [`hawaii-stations.csv`](Resources/hawaii--stations.csv) - Seed data for Hawaiian climate measurement stations.
+  - [`hawaii_stations.csv`](Resources/hawaii_stations.csv) - Seed data for Hawaiian climate measurement stations.
 
 ## Results
 
