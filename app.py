@@ -13,6 +13,7 @@ from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
 
+from datetime import datetime
 
 #################################################
 # Database Setup
@@ -152,6 +153,20 @@ def tobs():
 
     return jsonify(tobs_list)
 
+
+#
+# Validate the date for proper format
+#
+
+def validate_date(date_text):
+    try:
+        if date_text != datetime.strptime(date_text, "%Y-%m-%d").strftime('%Y-%m-%d'):
+            raise ValueError
+        return True
+    except ValueError:
+        return False
+
+
 #
 # Function to calculate the min, avg, and max temperatures
 # for the given date range
@@ -203,6 +218,11 @@ def get_aggregated_temps_for_dates(start_date, end_date=None):
 
 @ app.route("/api/v1.0/tobs/<start>")
 def start_dates(start):
+
+    # validate start date
+    if not validate_date(start):
+        return jsonify({"error": f"Please confirm your <start> '{start}' date is in the correct format YYYY-MM-DD"}), 404
+
     return jsonify(get_aggregated_temps_for_dates(start))
 
 #
@@ -212,6 +232,15 @@ def start_dates(start):
 
 @ app.route("/api/v1.0/tobs/<start>/<end>")
 def start_and_end_dates(start, end):
+
+    # validate start and end dates
+    if not validate_date(start) or not validate_date(end):
+        return jsonify({"error": f"Please confirm your <start> '{start}' and <end> '{end}' date is in the correct format YYYY-MM-DD"}), 404
+
+    # make sure start is less than end date
+    if start > end:
+        return jsonify({"error": f"Please confirm <end> '{end}' date is greater than the <start> '{start}'' date"}), 404
+
     return jsonify(get_aggregated_temps_for_dates(start, end))
 
 
